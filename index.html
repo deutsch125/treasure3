@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品页</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css" />
+    <script src="cookie.js"></script>
+</head>
+<body>
+    <h1>商品列表</h1>
+    <p><a href="cart.html">我的购物车</a><em class="total">0</em></p>
+    <div>
+        <dl pid="1001">
+            <dt><img src="img/main101_1.png" /></dt>
+            <dd>智能手表</dd>
+            <dd>酷黑，黑，黑，黑</dd>
+            <dd>￥<span>988</span></dd>
+            <dd><button>添加购物车</button></dd>
+        </dl>
+        <dl pid="1002">
+            <dt><img src="img/main101_1.png" /></dt>
+            <dd>智能手机1</dd>
+            <dd>黑红，红，红，红</dd>
+            <dd>￥<span>1988</span></dd>
+            <dd><button>添加购物车</button></dd>
+        </dl>
+        <dl pid="1003">
+            <dt><img src="img/main101_1.png" /></dt>
+            <dd>智能手机2</dd>
+            <dd>银灰，银，银，银</dd>
+            <dd>￥<span>2988</span></dd>
+            <dd><button>添加购物车</button></dd>
+        </dl>
+        <dl pid="1004">
+            <dt><img src="img/main101_1.png" /></dt>
+            <dd>智能手机3</dd>
+            <dd>酷黑，黑，黑，黑</dd>
+            <dd>￥<span>2300</span></dd>
+            <dd><button>添加购物车</button></dd>
+        </dl>
+    </div>
+    <script src="index.js"></script>
+    <script>
+        let list = getAllData();
+        if(!list){
+            cookie.set({
+                name:'data',
+                value:[]
+            })
+            list = getAllData();
+        }
+        let btns = document.querySelectorAll('button');
+        let all = document.querySelector('.total');
+        all.innerText = allGoods();
+        for(let i in btns){
+            btns[i].onclick = function(){
+                let dl = this.parentNode.parentNode;
+                let pid = dl.getAttribute('pid');
+                if(!checkData(pid)){
+                    addData(pid,1);
+                }else{
+                    list = getAllData();
+                    let pImg = dl.children[0].querySelector('img').src,
+                        pName = dl.children[1].innerText,
+                        info = dl.children[2].innerText,
+                        price = dl.children[3].querySelector('span').innerText,
+                        pCount = 1;
+                    let good = {
+                        pid,
+                        pImg,
+                        pName,
+                        info,
+                        price,
+                        pCount
+                    }
+                    list.push(good);
+                    renewData(list);
+                }
+                all.innerText = allGoods();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车页面</title>
+    <link rel = "stylesheet" type = "text/css" href= "css/cart.css" />
+    <script src="cookie.js"></script>
+</head>
+<body>
+    <div class= "bigbox">
+        <h1>购物车</h1>
+        <p><a href="index.html">返回商品列表页</a></p>
+        <table border="1" cellspacing="0" class="tbl" width="600px">
+            <thead>
+                <tr>
+                    <th><input class="xza" type="checkbox" />全选</th>
+                    <th>货物ID</th>
+                    <th>图片</th>
+                    <th>描述</th>
+                    <th>数量</th>
+                    <th>单价</th>
+                    <th>小计</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+
+            </tbody>
+        </table>
+        <div class="ts">购物车内没有任何商品</div>
+        <h2>总价格： ￥<span id="all">0</span></h2>
+    </div>
+    <script src="index.js"></script>
+    <script>
+        let table = document.querySelector('.tbl'),
+            ts = document.querySelector('.ts'),
+            tbody = document.querySelector('.tbody'),
+            xza = document.querySelector('.xza'),
+            xz = document.getElementsByClassName('xz');
+        let list = getAllData();
+        if(list.length == 0){
+            table.style.display = 'none';
+        }else{
+            ts.style.display = 'none';
+            let domFrag = document.createDocumentFragment('');
+            for(let i in list){
+                let good = list[i];
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td><input class='xz' type='checkbox' /></td>
+                          <td>${good.pid}</td>
+                          <td><img src='${good.pImg}' height='80px'/></td>
+                          <td>${good.info}</td>
+                          <td><button>-</button><input type='text' value='${good.pCount}' size='5' /><button>+</button></td>
+                          <td>${good.price}</td>
+                          <td>${good.price*good.pCount}</td>
+                          <td><button>删除</button></td>`;
+                domFrag.appendChild(tr);
+            }
+            tbody.appendChild(domFrag);
+        }
+        function allPrice(){
+            let allNum = 0
+            for(let i = 0 ; i < xz.length ; i++){
+                if(xz[i].checked){
+                    allNum += Number(xz[i].parentNode.parentNode.children[6].innerText);
+                }
+            }
+            all.innerText = allNum;
+        }
+        //单选按钮
+        function xzs(){
+            xz = document.getElementsByClassName('xz');
+            let flag = true;
+            for(let i = 0 ; i < xz.length ; i++){
+                if(!xz[i].checked){
+                    flag = false;
+                }
+            }
+            xza.checked = flag;
+            allPrice()
+        }
+        //单选监听
+        for(let i in xz){
+            xz[i].onchange = function(){
+                xzs()
+            }
+        }
+        //全选按钮
+        xza.onclick = function(){
+            for(let i in xz){
+                xz[i].checked = xza.checked ? true : false;
+            }
+            allPrice()
+        }
+        tbody.addEventListener('click',(e)=>{
+            let target = e.target;
+            let tr = target.parentNode.parentNode;
+            let pid = tr.children[1].innerText;
+            if(target.innerText == '+'){
+                let input = target.parentNode.querySelector('input');
+                input.value++;
+                addData(pid,1)
+                tr.children[6].innerText = input.value*tr.children[5].innerText;
+                tr.children[0].querySelector('input').checked = true;
+            }
+            if(target.innerText == '-'){
+                let input = target.parentNode.querySelector('input');
+                if(input.value == 1){
+                    input.value = 1;
+                    addData(pid,0);
+                }else{
+                    input.value--;
+                    addData(pid,-1)
+                }
+                tr.children[6].innerText = input.value*tr.children[5].innerText;
+                tr.children[0].querySelector('input').checked = true;
+            }
+            if(target.innerText == '删除'){
+                if(confirm('确定删除此商品？')){
+                    tr.remove();
+                    deletData(pid);
+                }
+                list = getAllData();
+                if(list.length == 0){
+                    table.style.display = 'none';
+                    ts.style.display = 'block';
+                }
+            }
+            allPrice()
+        })
+    </script>
+</body>
+</html>
