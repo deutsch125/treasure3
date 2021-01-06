@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倒计时</title>
+    <style>
+        #box{
+            margin-top: 300px;
+            text-align: center;
+            font-size: 40px;
+            color: #E7B27C;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+    <script>
+        function changeTime(){
+            let nowTime = new Date();
+            let futureTime = new Date("2021/04/01");
+            let interval = futureTime.getTime() - nowTime.getTime();
+            let days = parseInt(interval/1000/60/60/24);
+            let hours = parseInt(interval/1000/60/60%24);
+            let minutes = parseInt(interval/1000/60%60);
+            let secondes = parseInt(interval/1000%60);
+            if(days/10 < 1){days = '0' + days};
+            if(hours/10 < 1){hours = '0' + hours};
+            if(minutes/10 < 1){minutes = '0' + minutes};
+            if(secondes/10 < 1){secondes = '0' + secondes};
+            box.innerText = `距离graduation还有${days}天${hours}时${minutes}分${secondes}秒`
+        };
+        changeTime()
+        setInterval(changeTime,1000)
+    </script>
+</body>
+</html>
